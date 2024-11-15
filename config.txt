@@ -1,0 +1,1 @@
+Configuration : {Total Number of Tickets: 200, Ticket Release Rate: 9, Customer Retrieval Rate: 8, Max Ticket Capacity: 10}
