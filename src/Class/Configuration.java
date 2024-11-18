@@ -13,6 +13,22 @@ public class Configuration {
         this.maxTicketCapacity = maxTicketCapacity;
     }
 
+    public int getMaxTicketCapacity() {
+        return maxTicketCapacity;
+    }
+
+    public int getTotalNumberOfTickets() {
+        return totalNumberOfTickets;
+    }
+
+    public int getTicketReleaseRate() {
+        return ticketReleaseRate;
+    }
+
+    public int getCustomerRetrievalRate() {
+        return customerRetrievalRate;
+    }
+
     @Override
     public String toString() {
         return "Configuration : {" +

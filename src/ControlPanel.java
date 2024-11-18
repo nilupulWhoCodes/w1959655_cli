@@ -1,5 +1,8 @@
 import Logger.Logger;
 import Class.Configuration;
+import Class.TicketPool;
+import Class.Vendor;
+import Class.Customer;
 
 import java.io.*;
 import java.util.InputMismatchException;
@@ -46,6 +49,7 @@ public class ControlPanel {
                     Configuration config = importConfigurationFromFile(filepath);
 
                     Logger.info("\nLoaded configuration from " + config + ".");
+                    selectSystemOptions(config);
 
                     return;
                 case 3:
@@ -146,8 +150,25 @@ public class ControlPanel {
 
             switch (userChoice) {
                 case 1:
-                    startSystem();
-                    return;
+                    TicketPool ticketPool = new TicketPool(config);
+
+                    Vendor vendor = new Vendor(ticketPool);
+                    Customer customer = new Customer(ticketPool);
+
+                    Thread vendorThread = new Thread(vendor);
+                    vendorThread.start();
+
+                    Thread customerThread = new Thread(customer);
+                    customerThread.start();
+
+                    try{
+                        vendorThread.join();
+                        customerThread.join();
+                    } catch (InterruptedException e) {
+                        Logger.error("An error occurred while waiting for thread to join.");
+                    }
+
+                    break;
                 case 2:
                     Logger.info("\nResetting the configuration form...");
                     configureOptions();
@@ -155,6 +176,7 @@ public class ControlPanel {
                 case 3:
                     Logger.info("\nSaving the configuration file...");
                     saveConfigurationToTextFile(config, filePath);
+                    selectSystemOptions(config);
                     return;
                 case 4:
                     Logger.info("Exiting the program. Goodbye!");
@@ -178,7 +200,7 @@ public class ControlPanel {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write(config.toString());
-            System.out.println("Configuration saved to: " + filePath);
+            System.out.println("Configuration saved to: " + filePath + ".Exit the program to view the file.");
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
@@ -237,9 +259,8 @@ public class ControlPanel {
     }
 
 
-    private void startSystem() {
+    private void startSystem(Configuration config) {
+        System.out.println(config.toString());
 
     }
-
-
 }
